@@ -98,10 +98,10 @@ export function Interview() {
         {!started ? (
           <>
             <div className="mb-8">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mock Interview (MCQ)</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">Select your role and start practicing</p>
+             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Mock Interview (MCQ)</h1>
+<p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">Select your role and start practicing</p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3 mb-6">
               {roles.map(role => (
                 <Card key={role} hover onClick={() => setSelectedRole(role)}
                   className={`text-center cursor-pointer ${selectedRole === role ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' : ''}`}>
@@ -112,12 +112,12 @@ export function Interview() {
             </div>
             {selectedRole && (
               <Card className="mb-6">
-                <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">{roleIcons[selectedRole]} {selectedRole}</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">{mcqQuestions[selectedRole].length} MCQ questions • ~5 minutes</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">{roleIcons[selectedRole]} {selectedRole}</h3>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{mcqQuestions[selectedRole].length} MCQ questions • ~5 minutes</p>
                   </div>
-                  <Button onClick={startInterview} size="lg">Start Interview <ChevronRight size={18} /></Button>
+                  <Button onClick={startInterview} size="lg" fullWidth>Start Interview <ChevronRight size={18} /></Button>
                 </div>
               </Card>
             )}

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FileText, Brain, BarChart3, Users, CheckCircle, ArrowRight, Star } from 'lucide-react'
+import { FileText, Brain, BarChart3, Users, ArrowRight, Star } from 'lucide-react'
 import { Navbar } from '../components/layout/Navbar'
 
 export function Landing() {
@@ -10,23 +10,23 @@ export function Landing() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+          <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium mb-5 sm:mb-6">
             <Star size={14} fill="currentColor" />
             Free AI-Powered Interview Prep
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-5 sm:mb-6 leading-tight">
             Ace Your Next
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"> Interview</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
             Score your resume with ATS checker, practice mock interviews by role, and get instant feedback — all for free.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl transition-all shadow-lg hover:shadow-xl">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link to="/signup" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl transition-all shadow-lg hover:shadow-xl text-sm sm:text-base">
               Get Started Free <ArrowRight size={18} />
             </Link>
-            <Link to="/login" className="inline-flex items-center gap-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold px-8 py-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+            <Link to="/login" className="inline-flex items-center justify-center gap-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-sm sm:text-base">
               Sign In
             </Link>
           </div>
@@ -34,45 +34,45 @@ export function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Everything You Need to Get Hired</h2>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">Powerful tools to prepare you for your dream job</p>
+      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">Everything You Need to Get Hired</h2>
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg">Powerful tools to prepare you for your dream job</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {[
             { icon: FileText, title: 'ATS Resume Scorer', desc: 'Get instant ATS score with detailed feedback on keywords, formatting, and sections.', color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
             { icon: Brain, title: 'Mock Interviews', desc: 'Practice with role-specific questions for Frontend, Backend, Java, Python, HR and more.', color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30' },
             { icon: BarChart3, title: 'Instant Feedback', desc: 'Get detailed feedback on your answers with improvement suggestions.', color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
             { icon: Users, title: 'Multiple Roles', desc: 'Prepare for 8+ different job roles with curated questions from industry experts.', color: 'text-orange-600 bg-orange-100 dark:bg-orange-900/30' },
           ].map(({ icon: Icon, title, desc, color }) => (
-            <div key={title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${color}`}>
-                <Icon size={22} />
+            <div key={title} className="bg-white dark:bg-gray-900 rounded-2xl p-5 sm:p-6 border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+              <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 sm:mb-4 ${color}`}>
+                <Icon size={20} className="sm:w-[22px] sm:h-[22px]" />
               </div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{desc}</p>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm sm:text-base">{title}</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-24 bg-gray-50 dark:bg-gray-900">
+      <section className="py-16 sm:py-24 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">How It Works</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
               { step: '01', title: 'Create Account', desc: 'Sign up for free in seconds. No credit card required.' },
               { step: '02', title: 'Upload Resume', desc: 'Upload your PDF resume and get instant ATS score with feedback.' },
               { step: '03', title: 'Practice & Improve', desc: 'Take mock interviews, get feedback, and land your dream job.' },
             ].map(({ step, title, desc }) => (
-              <div key={step} className="text-center">
-                <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-4">{step}</div>
-                <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-2">{title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{desc}</p>
+              <div key={step} className="text-center px-2">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-bold mx-auto mb-3 sm:mb-4">{step}</div>
+                <h3 className="font-semibold text-gray-900 dark:text-white text-base sm:text-lg mb-2">{title}</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{desc}</p>
               </div>
             ))}
           </div>
@@ -80,19 +80,19 @@ export function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-12">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Ace Your Interview?</h2>
-          <p className="text-blue-100 text-lg mb-8">Join thousands of candidates who landed their dream jobs</p>
-          <Link to="/signup" className="inline-flex items-center gap-2 bg-white text-blue-600 font-semibold px-8 py-4 rounded-xl hover:bg-blue-50 transition-all">
+      <section className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-8 sm:p-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">Ready to Ace Your Interview?</h2>
+          <p className="text-blue-100 text-base sm:text-lg mb-6 sm:mb-8">Join thousands of candidates who landed their dream jobs</p>
+          <Link to="/signup" className="inline-flex items-center gap-2 bg-white text-blue-600 font-semibold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl hover:bg-blue-50 transition-all text-sm sm:text-base">
             Start For Free <ArrowRight size={18} />
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 dark:border-gray-800 py-8">
-        <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 dark:text-gray-400 text-sm">
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
           <div className="flex items-center justify-center gap-2 mb-2">
             <div className="w-6 h-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-md flex items-center justify-center">
               <span className="text-white font-bold text-xs">IH</span>

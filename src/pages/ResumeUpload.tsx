@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import type { ATSFeedback } from '../types/index'
 import toast from 'react-hot-toast'
+import { extractTextFromPDF } from '../lib/pdfReader'
 
 export function ResumeUpload() {
   const { user } = useAuth()
@@ -15,6 +16,14 @@ export function ResumeUpload() {
   const [uploading, setUploading] = useState(false)
   const [feedback, setFeedback] = useState<ATSFeedback | null>(null)
   const [dragOver, setDragOver] = useState(false)
+  const [targetRole, setTargetRole] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (user) {
+      supabase.from('profiles').select('target_role').eq('id', user.id).single()
+        .then(({ data }) => setTargetRole(data?.target_role || null))
+    }
+  }, [user])
 
   const handleFile = (f: File) => {
     if (f.type !== 'application/pdf') { toast.error('Please upload a PDF file'); return }
@@ -35,7 +44,7 @@ export function ResumeUpload() {
     setUploading(true)
     try {
       const text = await extractTextFromPDF(file)
-      const atsResult = scoreResume(text)
+      const atsResult = scoreResume(text, targetRole)
       const filePath = `${user.id}/${Date.now()}_${file.name}`
       const { error: uploadError } = await supabase.storage.from('resumes').upload(filePath, file)
       if (uploadError) throw uploadError
@@ -51,17 +60,6 @@ export function ResumeUpload() {
       toast.error('Upload failed. Please try again.')
     }
     setUploading(false)
-  }
-
-  const extractTextFromPDF = async (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        const text = reader.result as string
-        resolve(text.replace(/[^\x20-\x7E\n]/g, ' '))
-      }
-      reader.readAsText(file)
-    })
   }
 
   const getScoreColor = (score: number) => {
@@ -82,10 +80,12 @@ export function ResumeUpload() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ATS Resume Scorer</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Upload your PDF resume to get instant ATS compatibility score</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            Upload your PDF resume to get instant ATS compatibility score
+            {targetRole && <span className="text-blue-600 dark:text-blue-400"> • Scoring for {targetRole}</span>}
+          </p>
         </div>
 
-        {/* Upload Area */}
         <Card className="mb-6">
           <div
             onDrop={handleDrop}
@@ -122,10 +122,8 @@ export function ResumeUpload() {
           )}
         </Card>
 
-        {/* Results */}
         {feedback && (
           <div className="space-y-6">
-            {/* Score */}
             <Card>
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -148,7 +146,6 @@ export function ResumeUpload() {
               </p>
             </Card>
 
-            {/* Section Scores */}
             <Card>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Section Breakdown</h3>
               <div className="space-y-4">
@@ -173,7 +170,6 @@ export function ResumeUpload() {
               </div>
             </Card>
 
-            {/* Strengths & Suggestions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
@@ -201,7 +197,6 @@ export function ResumeUpload() {
               </Card>
             </div>
 
-            {/* Keywords */}
             <Card>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Keywords Found</h3>
               <div className="flex flex-wrap gap-2 mb-4">

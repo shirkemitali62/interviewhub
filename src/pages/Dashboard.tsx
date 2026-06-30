@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FileText, Brain, TrendingUp, Clock, ArrowRight, Award } from 'lucide-react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { Navbar } from '../components/layout/Navbar'
@@ -10,6 +11,7 @@ import { Spinner } from '../components/ui/Spinner'
 export function Dashboard() {
   const { user } = useAuth()
   const [stats, setStats] = useState({ resumes: 0, interviews: 0, avgScore: 0, bestScore: 0 })
+  const [scoreHistory, setScoreHistory] = useState<{ name: string; score: number }[]>([])
   const [loading, setLoading] = useState(true)
   const [profileName, setProfileName] = useState('')
 
@@ -20,7 +22,7 @@ export function Dashboard() {
   const fetchStats = async () => {
     const [{ data: resumes }, { data: sessions }, { data: profile }] = await Promise.all([
       supabase.from('resumes').select('ats_score').eq('user_id', user!.id),
-      supabase.from('interview_sessions').select('score').eq('user_id', user!.id).not('score', 'is', null),
+      supabase.from('interview_sessions').select('score, created_at').eq('user_id', user!.id).not('score', 'is', null).order('created_at', { ascending: true }),
       supabase.from('profiles').select('full_name').eq('id', user!.id).single(),
     ])
     const scores = sessions?.map(s => s.score).filter(Boolean) as number[] || []
@@ -30,6 +32,13 @@ export function Dashboard() {
       avgScore: scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0,
       bestScore: scores.length ? Math.max(...scores) : 0,
     })
+
+    const history = (sessions || []).map((s, i) => ({
+      name: `#${i + 1}`,
+      score: s.score || 0,
+    }))
+    setScoreHistory(history)
+
     setProfileName(profile?.full_name || user?.email?.split('@')[0] || 'User')
     setLoading(false)
   }
@@ -43,49 +52,64 @@ export function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
             Welcome back, {profileName}! 👋
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Here's your interview prep overview</p>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">Here's your interview prep overview</p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {[
             { label: 'Resumes Uploaded', value: stats.resumes, icon: FileText, color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
             { label: 'Mock Interviews', value: stats.interviews, icon: Brain, color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30' },
             { label: 'Avg Interview Score', value: stats.avgScore ? `${stats.avgScore}%` : 'N/A', icon: TrendingUp, color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
             { label: 'Best Score', value: stats.bestScore ? `${stats.bestScore}%` : 'N/A', icon: Award, color: 'text-orange-600 bg-orange-100 dark:bg-orange-900/30' },
           ].map(({ label, value, icon: Icon, color }) => (
-            <Card key={label}>
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${color}`}>
-                <Icon size={18} />
+            <Card key={label} className="!p-4 sm:!p-6">
+              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mb-2 sm:mb-3 ${color}`}>
+                <Icon size={16} className="sm:w-[18px] sm:h-[18px]" />
               </div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
+              <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
             </Card>
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {scoreHistory.length > 0 && (
+          <Card className="mb-6 sm:mb-8 !p-4 sm:!p-6">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4">Score Progress</h2>
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={scoreHistory}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+                <XAxis dataKey="name" stroke="#9ca3af" fontSize={12} />
+                <YAxis stroke="#9ca3af" fontSize={12} domain={[0, 100]} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
+                  labelStyle={{ color: '#fff' }}
+                />
+                <Line type="monotone" dataKey="score" stroke="#3b82f6" strokeWidth={2.5} dot={{ fill: '#3b82f6', r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        )}
+
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {[
             { to: '/resume', icon: FileText, title: 'Upload Resume', desc: 'Get your ATS score instantly', color: 'from-blue-500 to-blue-600' },
             { to: '/interview', icon: Brain, title: 'Mock Interview', desc: 'Practice role-based questions', color: 'from-purple-500 to-purple-600' },
             { to: '/resume/history', icon: Clock, title: 'Resume History', desc: 'View past uploads & scores', color: 'from-green-500 to-green-600' },
           ].map(({ to, icon: Icon, title, desc, color }) => (
             <Link key={to} to={to}>
-              <Card hover className="h-full">
-                <div className={`w-12 h-12 bg-gradient-to-r ${color} rounded-xl flex items-center justify-center mb-4`}>
-                  <Icon size={22} className="text-white" />
+              <Card hover className="h-full !p-4 sm:!p-6">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${color} rounded-xl flex items-center justify-center mb-3 sm:mb-4`}>
+                  <Icon size={18} className="sm:w-[22px] sm:h-[22px] text-white" />
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">{desc}</p>
-                <div className="flex items-center gap-1 text-blue-600 text-sm font-medium">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1 text-sm sm:text-base">{title}</h3>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-3">{desc}</p>
+                <div className="flex items-center gap-1 text-blue-600 text-xs sm:text-sm font-medium">
                   Get Started <ArrowRight size={14} />
                 </div>
               </Card>
@@ -93,10 +117,9 @@ export function Dashboard() {
           ))}
         </div>
 
-        {/* Tips */}
-        <Card>
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-3">💡 Pro Tips</h3>
-          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+        <Card className="!p-4 sm:!p-6">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm sm:text-base">💡 Pro Tips</h3>
+          <ul className="space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
             <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Upload your latest resume to check ATS compatibility</li>
             <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Practice mock interviews for your target role daily</li>
             <li className="flex items-start gap-2"><span className="text-green-500 mt-0.5">✓</span> Use keywords from job descriptions in your resume</li>
