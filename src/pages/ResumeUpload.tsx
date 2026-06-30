@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, FileText, CheckCircle, AlertCircle, Download } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { scoreResume } from '../lib/atsScorer'
+import { generateImprovedResumeDocx, generateImprovedResumePDF } from '../lib/resumeGenerator'
 import { Navbar } from '../components/layout/Navbar'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
@@ -16,12 +17,14 @@ export function ResumeUpload() {
   const [uploading, setUploading] = useState(false)
   const [feedback, setFeedback] = useState<ATSFeedback | null>(null)
   const [dragOver, setDragOver] = useState(false)
-  const [targetRole, setTargetRole] = useState<string | null>(null)
+  const [profileData, setProfileData] = useState<any>(null)
+  const [resumeText, setResumeText] = useState('')
+  const [generating, setGenerating] = useState(false)
 
   useEffect(() => {
     if (user) {
-      supabase.from('profiles').select('target_role').eq('id', user.id).single()
-        .then(({ data }) => setTargetRole(data?.target_role || null))
+      supabase.from('profiles').select('*').eq('id', user.id).single()
+        .then(({ data }) => setProfileData(data))
     }
   }, [user])
 
@@ -44,7 +47,8 @@ export function ResumeUpload() {
     setUploading(true)
     try {
       const text = await extractTextFromPDF(file)
-      const atsResult = scoreResume(text, targetRole)
+      setResumeText(text)
+      const atsResult = scoreResume(text, profileData?.target_role)
       const filePath = `${user.id}/${Date.now()}_${file.name}`
       const { error: uploadError } = await supabase.storage.from('resumes').upload(filePath, file)
       if (uploadError) throw uploadError
@@ -60,6 +64,49 @@ export function ResumeUpload() {
       toast.error('Upload failed. Please try again.')
     }
     setUploading(false)
+  }
+
+  const profileInfo = {
+    email: user?.email || '',
+    phone: profileData?.phone || '',
+    linkedin: profileData?.linkedin_url || '',
+    github: profileData?.github_url || '',
+    location: profileData?.location || '',
+    fullName: profileData?.full_name || '',
+  }
+
+const isProfileIncomplete = !profileData?.phone
+
+  const handleDownloadDocx = async () => {
+    if (!feedback || !file) return
+    if (isProfileIncomplete) {
+      toast.error('Please complete your Profile (phone, LinkedIn) for a ready-to-submit resume')
+      return
+    }
+    setGenerating(true)
+    try {
+      await generateImprovedResumeDocx(resumeText, feedback, file.name, profileInfo)
+      toast.success('Word document downloaded!')
+    } catch {
+      toast.error('Failed to generate document')
+    }
+    setGenerating(false)
+  }
+
+  const handleDownloadPdf = () => {
+    if (!feedback || !file) return
+    if (isProfileIncomplete) {
+      toast.error('Please complete your Profile (phone, LinkedIn) for a ready-to-submit resume')
+      return
+    }
+    setGenerating(true)
+    try {
+      generateImprovedResumePDF(resumeText, feedback, file.name, profileInfo)
+      toast.success('PDF downloaded!')
+    } catch {
+      toast.error('Failed to generate PDF')
+    }
+    setGenerating(false)
   }
 
   const getScoreColor = (score: number) => {
@@ -82,9 +129,17 @@ export function ResumeUpload() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ATS Resume Scorer</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Upload your PDF resume to get instant ATS compatibility score
-            {targetRole && <span className="text-blue-600 dark:text-blue-400"> • Scoring for {targetRole}</span>}
+            {profileData?.target_role && <span className="text-blue-600 dark:text-blue-400"> • Scoring for {profileData.target_role}</span>}
           </p>
         </div>
+
+        {isProfileIncomplete && (
+          <Card className="mb-6 border-l-4 border-l-orange-500">
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              ⚠️ Complete your <a href="/profile" className="text-blue-600 font-medium hover:underline">Profile</a> (phone number, LinkedIn) to generate a ready-to-submit resume without placeholders.
+            </p>
+          </Card>
+        )}
 
         <Card className="mb-6">
           <div
@@ -105,17 +160,16 @@ export function ResumeUpload() {
             </label>
             <p className="text-xs text-gray-400 mt-3">PDF only • Max 5MB</p>
           </div>
-
           {file && (
-            <div className="mt-4 flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-              <div className="flex items-center gap-3">
-                <FileText size={20} className="text-blue-600" />
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white text-sm">{file.name}</p>
+            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+              <div className="flex items-center gap-3 min-w-0">
+                <FileText size={20} className="text-blue-600 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="font-medium text-gray-900 dark:text-white text-sm truncate">{file.name}</p>
                   <p className="text-xs text-gray-500">{(file.size / 1024).toFixed(0)} KB</p>
                 </div>
               </div>
-              <Button onClick={handleUpload} loading={uploading} size="sm">
+              <Button onClick={handleUpload} loading={uploading} size="sm" fullWidth>
                 Analyze Resume
               </Button>
             </div>
@@ -144,6 +198,14 @@ export function ResumeUpload() {
                   feedback.score >= 50 ? '⚠️ Good, but needs some improvements' :
                   '❌ Needs significant improvements'}
               </p>
+              <div className="flex flex-col sm:flex-row gap-3 mt-5 pt-5 border-t border-gray-100 dark:border-gray-800">
+                <Button onClick={handleDownloadDocx} loading={generating} variant="secondary" fullWidth>
+                  <Download size={16} /> Download as Word
+                </Button>
+                <Button onClick={handleDownloadPdf} loading={generating} fullWidth>
+                  <Download size={16} /> Download as PDF
+                </Button>
+              </div>
             </Card>
 
             <Card>

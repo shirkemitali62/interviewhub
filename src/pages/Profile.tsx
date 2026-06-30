@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, Mail, Link as LinkIcon, Save } from 'lucide-react'
+import { User, Mail, Link as LinkIcon, Save, Phone, MapPin } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { Navbar } from '../components/layout/Navbar'
@@ -58,6 +58,14 @@ export function Profile() {
             icon={<User size={16} />} />
           <Input label="Email" type="email" value={user?.email || ''} disabled
             icon={<Mail size={16} />} />
+          <Input label="Phone Number" type="tel" placeholder="9876543210"
+            value={profile.phone || ''}
+            onChange={(e: any) => setProfile((p: any) => ({ ...p, phone: e.target.value }))}
+            icon={<Phone size={16} />} />
+          <Input label="Location" type="text" placeholder="Pune, Maharashtra"
+            value={profile.location || ''}
+            onChange={(e: any) => setProfile((p: any) => ({ ...p, location: e.target.value }))}
+            icon={<MapPin size={16} />} />
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Target Role</label>
             <select value={profile.target_role || ''}
@@ -83,6 +91,10 @@ export function Profile() {
             value={profile.linkedin_url || ''}
             onChange={(e: any) => setProfile((p: any) => ({ ...p, linkedin_url: e.target.value }))}
             icon={<LinkIcon size={16} />} />
+          <Input label="GitHub URL" type="url" placeholder="https://github.com/yourusername"
+            value={profile.github_url || ''}
+            onChange={(e: any) => setProfile((p: any) => ({ ...p, github_url: e.target.value }))}
+           icon={<LinkIcon size={16} />} />
           <Button onClick={handleSave} loading={saving} fullWidth>
             <Save size={16} /> Save Profile
           </Button>

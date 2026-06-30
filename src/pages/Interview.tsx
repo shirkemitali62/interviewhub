@@ -22,12 +22,24 @@ export function Interview() {
   const [submitting, setSubmitting] = useState(false)
 
   const roles = Object.keys(mcqQuestions)
-  const questions: MCQQuestion[] = selectedRole ? mcqQuestions[selectedRole] : []
+const [randomQuestions, setRandomQuestions] = useState<MCQQuestion[]>([])
+
+const shuffleAndPick = (role: string) => {
+  const all = [...mcqQuestions[role]]
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[all[i], all[j]] = [all[j], all[i]]
+  }
+  return all.slice(0, 5)
+}
+
+const questions: MCQQuestion[] = randomQuestions
   const currentQuestion = questions[currentQ]
   const hasAnswered = currentQuestion && selectedOptions[currentQuestion.id] !== undefined
 
   const startInterview = () => {
     if (!selectedRole) { toast.error('Please select a role'); return }
+    setRandomQuestions(shuffleAndPick(selectedRole))
     setStarted(true); setCurrentQ(0); setSelectedOptions({}); setShowFeedback(false)
   }
 
