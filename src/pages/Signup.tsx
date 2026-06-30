@@ -46,7 +46,7 @@ export function Signup() {
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-800">
           <form onSubmit={handleSignup} className="space-y-5">
-            <Input label="Full Name" type="text" placeholder="Digambar Shirke"
+            <Input label="Full Name" type="text" placeholder="Your Name"
               value={fullName} onChange={e => setFullName(e.target.value)}
               icon={<User size={16} />} required />
             <Input label="Email" type="email" placeholder="you@example.com"
