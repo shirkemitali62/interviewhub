@@ -1,0 +1,79 @@
+export type MCQQuestion = {
+  id: string
+  question: string
+  options: string[]
+  correctAnswer: number
+  category: string
+  difficulty: 'easy' | 'medium' | 'hard'
+  explanation: string
+}
+
+export const mcqQuestions: Record<string, MCQQuestion[]> = {
+  'Frontend Developer': [
+    { id: 'fe1', question: 'What is the difference between let and var in JavaScript?', options: ['No difference', 'let is block-scoped, var is function-scoped', 'var is block-scoped, let is function-scoped', 'let cannot be reassigned'], correctAnswer: 1, category: 'JavaScript', difficulty: 'easy', explanation: 'let is block-scoped (limited to the block it is declared in), while var is function-scoped, which can lead to unexpected behavior.' },
+    { id: 'fe2', question: 'What does the Virtual DOM do in React?', options: ['Directly updates the browser DOM', 'Creates a lightweight copy of DOM to optimize updates', 'Replaces HTML entirely', 'Stores user data'], correctAnswer: 1, category: 'React', difficulty: 'medium', explanation: 'The Virtual DOM is a lightweight JS representation of the real DOM, allowing React to calculate the minimal changes needed before updating the actual DOM.' },
+    { id: 'fe3', question: 'Which CSS property is used to create a flex container?', options: ['display: flex', 'position: flex', 'flex: container', 'layout: flex'], correctAnswer: 0, category: 'CSS', difficulty: 'easy', explanation: 'Setting display: flex on a container makes it a flex container, enabling flexbox layout for its children.' },
+    { id: 'fe4', question: 'What hook is used to manage state in a functional React component?', options: ['useEffect', 'useState', 'useContext', 'useRef'], correctAnswer: 1, category: 'React', difficulty: 'easy', explanation: 'useState is the React hook used to add and manage local state in functional components.' },
+    { id: 'fe5', question: 'What does CORS stand for?', options: ['Cross-Origin Resource Sharing', 'Common Object Request System', 'Cross-Origin Reference Style', 'Client Object Request Service'], correctAnswer: 0, category: 'Web', difficulty: 'medium', explanation: 'CORS (Cross-Origin Resource Sharing) is a security feature that controls how resources are requested from a different domain than the one serving the webpage.' },
+  ],
+  'Backend Developer': [
+    { id: 'be1', question: 'Which HTTP method is used to update an existing resource?', options: ['GET', 'POST', 'PUT', 'DELETE'], correctAnswer: 2, category: 'API', difficulty: 'easy', explanation: 'PUT is used to update an existing resource entirely, while PATCH updates it partially.' },
+    { id: 'be2', question: 'What is the main difference between SQL and NoSQL databases?', options: ['SQL is faster always', 'SQL uses structured tables, NoSQL uses flexible schemas', 'NoSQL cannot store data', 'There is no difference'], correctAnswer: 1, category: 'Database', difficulty: 'easy', explanation: 'SQL databases use structured tables with fixed schemas, while NoSQL databases offer flexible, often schema-less data storage like documents or key-value pairs.' },
+    { id: 'be3', question: 'What is middleware in Express.js?', options: ['A database', 'Functions that execute during the request-response cycle', 'A frontend framework', 'A type of server'], correctAnswer: 1, category: 'Node.js', difficulty: 'medium', explanation: 'Middleware functions have access to the request and response objects and can execute code, modify data, or end the request-response cycle.' },
+    { id: 'be4', question: 'What does JWT stand for?', options: ['Java Web Token', 'JSON Web Token', 'JavaScript Web Tool', 'Joint Web Transfer'], correctAnswer: 1, category: 'Security', difficulty: 'medium', explanation: 'JWT (JSON Web Token) is a compact, URL-safe way of representing claims to be transferred between two parties, commonly used for authentication.' },
+    { id: 'be5', question: 'What is the purpose of database indexing?', options: ['To delete old data', 'To speed up data retrieval', 'To encrypt data', 'To backup data'], correctAnswer: 1, category: 'Database', difficulty: 'medium', explanation: 'Indexing creates a data structure that improves the speed of data retrieval operations on a database table.' },
+  ],
+  'Full Stack Developer': [
+    { id: 'fs1', question: 'What is the main advantage of server-side rendering (SSR)?', options: ['Slower page loads', 'Better SEO and faster initial load', 'No JavaScript needed', 'Cannot use React'], correctAnswer: 1, category: 'Web', difficulty: 'medium', explanation: 'SSR renders pages on the server before sending to the client, improving SEO and reducing time to first meaningful paint.' },
+    { id: 'fs2', question: 'What is the purpose of a .env file?', options: ['Store images', 'Store environment variables securely', 'Store CSS styles', 'Store HTML templates'], correctAnswer: 1, category: 'DevOps', difficulty: 'easy', explanation: '.env files store configuration values and secrets like API keys, kept out of source code for security.' },
+    { id: 'fs3', question: 'What does MVC stand for?', options: ['Model View Controller', 'Multiple Virtual Components', 'Main View Console', 'Module Version Control'], correctAnswer: 0, category: 'Architecture', difficulty: 'easy', explanation: 'MVC separates an application into Model (data), View (UI), and Controller (logic), promoting organized code structure.' },
+    { id: 'fs4', question: 'What is Docker primarily used for?', options: ['Writing code', 'Containerizing applications for consistent deployment', 'Designing UI', 'Database management'], correctAnswer: 1, category: 'DevOps', difficulty: 'medium', explanation: 'Docker packages applications with their dependencies into containers, ensuring they run consistently across different environments.' },
+    { id: 'fs5', question: 'What protocol is best for real-time bidirectional communication?', options: ['HTTP', 'FTP', 'WebSocket', 'SMTP'], correctAnswer: 2, category: 'Web', difficulty: 'medium', explanation: 'WebSocket provides full-duplex communication channels over a single TCP connection, ideal for real-time apps like chat.' },
+  ],
+  'Java Developer': [
+    { id: 'ja1', question: 'Which of these is NOT a pillar of OOP?', options: ['Encapsulation', 'Inheritance', 'Compilation', 'Polymorphism'], correctAnswer: 2, category: 'OOP', difficulty: 'easy', explanation: 'The four pillars of OOP are Encapsulation, Inheritance, Polymorphism, and Abstraction. Compilation is not one of them.' },
+    { id: 'ja2', question: 'Can an abstract class have a constructor in Java?', options: ['No, never', 'Yes', 'Only static constructors', 'Only if it has no methods'], correctAnswer: 1, category: 'OOP', difficulty: 'medium', explanation: 'Abstract classes can have constructors, which are called when a subclass object is instantiated, even though the abstract class itself cannot be instantiated.' },
+    { id: 'ja3', question: 'Which collection allows duplicate elements in Java?', options: ['Set', 'Map', 'List', 'TreeSet'], correctAnswer: 2, category: 'Collections', difficulty: 'easy', explanation: 'List allows duplicate elements and maintains insertion order, unlike Set which only stores unique elements.' },
+    { id: 'ja4', question: 'What keyword is used to create a thread in Java?', options: ['thread', 'Runnable or Thread class', 'new Process()', 'async'], correctAnswer: 1, category: 'Concurrency', difficulty: 'medium', explanation: 'Java threads are created by implementing the Runnable interface or extending the Thread class.' },
+    { id: 'ja5', question: 'What is the default value of a boolean in Java?', options: ['true', 'false', 'null', '0'], correctAnswer: 1, category: 'Basics', difficulty: 'easy', explanation: 'In Java, instance variables of type boolean default to false if not explicitly initialized.' },
+  ],
+  'Python Developer': [
+    { id: 'py1', question: 'What is the output of list comprehension [x for x in range(3)]?', options: ['[0, 1, 2]', '[1, 2, 3]', '[0, 1, 2, 3]', 'Error'], correctAnswer: 0, category: 'Python', difficulty: 'easy', explanation: 'range(3) generates 0, 1, 2, so the list comprehension produces [0, 1, 2].' },
+    { id: 'py2', question: 'Which keyword is used to create a generator in Python?', options: ['return', 'yield', 'generate', 'async'], correctAnswer: 1, category: 'Python', difficulty: 'medium', explanation: 'The yield keyword is used inside a function to make it a generator, producing values one at a time lazily.' },
+    { id: 'py3', question: 'What does GIL stand for in Python?', options: ['General Interface Layer', 'Global Interpreter Lock', 'Generic Import Library', 'Global Index List'], correctAnswer: 1, category: 'Concurrency', difficulty: 'hard', explanation: 'The Global Interpreter Lock (GIL) ensures only one thread executes Python bytecode at a time, limiting true parallel threading.' },
+    { id: 'py4', question: 'Which data type is immutable in Python?', options: ['List', 'Dictionary', 'Tuple', 'Set'], correctAnswer: 2, category: 'Python', difficulty: 'easy', explanation: 'Tuples are immutable in Python, meaning their values cannot be changed after creation, unlike lists which are mutable.' },
+    { id: 'py5', question: 'What is the purpose of the __init__ method in Python?', options: ['To delete an object', 'To initialize a new object\'s attributes', 'To import a module', 'To create a loop'], correctAnswer: 1, category: 'Python', difficulty: 'easy', explanation: '__init__ is a constructor method called automatically when a new instance of a class is created, used to set initial attribute values.' },
+  ],
+  'HR Round': [
+    { id: 'hr1', question: 'What is the best approach when answering "Tell me about yourself"?', options: ['Share personal life details', 'Give a professional summary of education, experience, and goals', 'Talk only about hobbies', 'Avoid answering directly'], correctAnswer: 1, category: 'Introduction', difficulty: 'easy', explanation: 'A professional summary covering relevant education, work experience, and career goals creates a strong first impression.' },
+    { id: 'hr2', question: 'What does the STAR method help with?', options: ['Salary negotiation', 'Structuring answers to behavioral questions', 'Writing a resume', 'Scheduling interviews'], correctAnswer: 1, category: 'Behavioral', difficulty: 'medium', explanation: 'STAR (Situation, Task, Action, Result) helps structure clear, complete answers to behavioral interview questions.' },
+    { id: 'hr3', question: 'When discussing weaknesses, what should you do?', options: ['Say you have no weaknesses', 'Mention a real weakness and how you are improving it', 'List multiple serious weaknesses', 'Avoid the question entirely'], correctAnswer: 1, category: 'Self Assessment', difficulty: 'medium', explanation: 'Sharing a genuine weakness along with steps taken to improve shows self-awareness and growth mindset.' },
+    { id: 'hr4', question: 'What is an appropriate way to discuss salary expectations?', options: ['Refuse to answer', 'Give a researched range based on market standards', 'Ask for an unreasonably high amount', 'Say any amount is fine'], correctAnswer: 1, category: 'Negotiation', difficulty: 'hard', explanation: 'Researching market rates and providing a reasonable range shows preparation and professionalism.' },
+    { id: 'hr5', question: 'Why is it important to ask questions at the end of an interview?', options: ['It is not important', 'Shows genuine interest and engagement', 'To fill time', 'To negotiate salary only'], correctAnswer: 1, category: 'Engagement', difficulty: 'easy', explanation: 'Asking thoughtful questions demonstrates genuine interest in the role and company, leaving a positive impression.' },
+  ],
+  'Data Analyst': [
+    { id: 'da1', question: 'Which SQL JOIN returns only matching rows from both tables?', options: ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN', 'FULL JOIN'], correctAnswer: 1, category: 'SQL', difficulty: 'easy', explanation: 'INNER JOIN returns only the rows that have matching values in both tables being joined.' },
+    { id: 'da2', question: 'What measure of central tendency is most affected by outliers?', options: ['Median', 'Mode', 'Mean', 'Range'], correctAnswer: 2, category: 'Statistics', difficulty: 'medium', explanation: 'The mean is sensitive to extreme values (outliers) since it factors in every value, unlike median which is more robust.' },
+    { id: 'da3', question: 'What is a pivot table primarily used for?', options: ['Writing code', 'Summarizing and reorganizing data', 'Creating databases', 'Sending emails'], correctAnswer: 1, category: 'Excel', difficulty: 'easy', explanation: 'Pivot tables allow you to summarize, group, and analyze large datasets quickly without complex formulas.' },
+    { id: 'da4', question: 'What does correlation NOT imply?', options: ['Relationship between variables', 'Causation', 'Pattern in data', 'Statistical association'], correctAnswer: 1, category: 'Statistics', difficulty: 'medium', explanation: 'Correlation shows a relationship between variables but does not prove that one variable causes changes in another.' },
+    { id: 'da5', question: 'Which chart type is best for showing trends over time?', options: ['Pie chart', 'Line chart', 'Scatter plot', 'Bar chart'], correctAnswer: 1, category: 'Visualization', difficulty: 'easy', explanation: 'Line charts effectively show how a value changes continuously over time, making trends easy to spot.' },
+  ],
+  'DevOps Engineer': [
+    { id: 'do1', question: 'What is the main benefit of containerization?', options: ['Larger file sizes', 'Consistent environments across systems', 'Slower deployments', 'No isolation'], correctAnswer: 1, category: 'Containers', difficulty: 'easy', explanation: 'Containers package an application with its dependencies, ensuring consistent behavior across different environments.' },
+    { id: 'do2', question: 'What does CI/CD stand for?', options: ['Code Integration/Code Deployment', 'Continuous Integration/Continuous Deployment', 'Container Image/Container Deploy', 'Code Inspection/Code Debug'], correctAnswer: 1, category: 'CI/CD', difficulty: 'easy', explanation: 'CI/CD automates the process of integrating code changes and deploying them, enabling faster and more reliable releases.' },
+    { id: 'do3', question: 'What is the role of a load balancer?', options: ['Store data', 'Distribute incoming traffic across multiple servers', 'Write code', 'Compile applications'], correctAnswer: 1, category: 'Networking', difficulty: 'medium', explanation: 'A load balancer distributes network traffic across multiple servers to ensure no single server is overwhelmed.' },
+    { id: 'do4', question: 'What does IaC stand for?', options: ['Internet as Code', 'Infrastructure as Code', 'Integration as Cloud', 'Interface as Configuration'], correctAnswer: 1, category: 'IaC', difficulty: 'medium', explanation: 'Infrastructure as Code means managing and provisioning infrastructure through code rather than manual processes.' },
+    { id: 'do5', question: 'What is the purpose of Kubernetes?', options: ['Writing frontend code', 'Orchestrating and managing containers', 'Database management', 'Email service'], correctAnswer: 1, category: 'Orchestration', difficulty: 'hard', explanation: 'Kubernetes automates the deployment, scaling, and management of containerized applications across clusters.' },
+  ],
+}
+
+export const roleIcons: Record<string, string> = {
+  'Frontend Developer': '🎨',
+  'Backend Developer': '⚙️',
+  'Full Stack Developer': '🚀',
+  'Java Developer': '☕',
+  'Python Developer': '🐍',
+  'HR Round': '🤝',
+  'Data Analyst': '📊',
+  'DevOps Engineer': '🔧',
+}
